@@ -7,14 +7,19 @@
 
 using namespace TUI;
 
-int main()
-{
+int main(int argc, char* argv[]) {
     // Special characters refuse to render without this.
     std::setlocale(LC_ALL, "en_US.UTF-8");
 
-    std::cout << "Please select a file to load: ";
-    std::string filePath;
-    std::getline(std::cin, filePath);
+    std::string filePath = argc > 1 ? argv[1] : "";
+    while (filePath == "") {
+        std::cout << "Please select a file to load: ";
+        std::getline(std::cin, filePath);
+
+        if (filePath == "") {
+            system("cls");
+        }
+    }
 
     std::cout << "Loading \"" << filePath << "\"" << std::endl;
 

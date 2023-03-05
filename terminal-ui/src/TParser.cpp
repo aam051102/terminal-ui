@@ -96,11 +96,15 @@ namespace TUI {
 
     TTree TParser::ParseTree(pugi::xml_node node) {
         TTree tTree;
+        tTree.item.depth = 0;
 
         // Label
         const std::string& treeLabel = node.attribute("label").as_string();
         tTree.item.label = treeLabel;
-        tTree.item.depth = 0;
+
+        // Indent Size
+        size_t indentSize = node.attribute("indentSize").as_ullong();
+        tTree.indentSize = indentSize;
 
         // Items
         const pugi::xml_object_range<pugi::xml_named_node_iterator> treeChildItems = node.children("item");
