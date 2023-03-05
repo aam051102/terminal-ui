@@ -1,20 +1,53 @@
-<table borderStyle="single">
-  <thead>
-    <tr>
-      <th>Header content 1</th>
-      <th>Header content 2</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Body content 1</td>
-      <td>Body content 2</td>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr>
-      <td>Footer content 1</td>
-      <td>Footer content 2</td>
-    </tr>
-  </tfoot>
-</table>
+<root>
+  <table borderStyle="single" padding="0,0,1,1">
+    <tbody>
+      <tr>
+        <td>Body content 1</td>
+        <td>Body content 2</td>
+      </tr>
+      <tr>
+        <td>Lorem ipsum dolor sit amet</td>
+        <td>Body content 2</td>
+      </tr>
+      <tr>
+        <td>Body content 1</td>
+        <td>Lorem ipsum</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table borderStyle="double" padding="1,1,2,2">
+    <tbody>
+      <tr>
+        <td>Body content 1</td>
+        <td>Lorem ipsum dolor sit amet dolores umbridge i dunno man</td>
+      </tr>
+      <tr>
+        <td>Lorem ipsum dolor sit amet</td>
+        <td>Body content 2</td>
+      </tr>
+      <tr>
+        <td>Body content 1</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <tree label="My Tree" indentSize="2">
+    <item label="Item #1">
+      <item label="#1.1" />
+      <item label="#1.2" />
+      <item label="#1.3">
+        <item label="#1.3.1">
+          <item label="#1.3.1.1" />
+          <item label="#1.3.1.2" />
+        </item>
+        <item label="#1.3.2" />
+      </item>
+    </item>
+    <item label="Item #2">
+      <item label="#2.1" />
+      <item label="#2.2" />
+      <item label="#2.3" />
+    </item>
+  </tree>
+</root>
