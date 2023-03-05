@@ -1,0 +1,7 @@
+[requires]
+pugixml/1.13@
+
+[generators]
+premake
+
+[options]
