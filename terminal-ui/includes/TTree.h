@@ -10,6 +10,7 @@
 namespace TUI {
     struct TTreeItem {
         std::string label;
+        size_t depth;
         std::vector<TTreeItem> children;
     };
 

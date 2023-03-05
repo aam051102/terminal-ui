@@ -3,9 +3,9 @@
 #include <iostream>
 
 namespace TUI {
-    // Left, Left (Connection), Bottom-left, Indent
+    // Left, Left (Connection), Bottom-left, Indent, Line
     const std::unordered_map<ETreeBorderStyle, std::vector<wchar_t>> borderCharMap = {
-        { ETreeBorderStyle::SINGLE, {L'\u2514', L'\u251c', L'\u2500', L' '}}
+        { ETreeBorderStyle::SINGLE, {L'\u2502', L'\u251c', L'\u2514', L' ', L'\u2500'}}
     };
 
     TTree::TTree() {
@@ -25,9 +25,21 @@ namespace TUI {
         while (deepItems.size() != 0 && (currentItem = deepItems.back()) != nullptr) {
             deepItems.pop_back();
 
-            /*for (size_t i = 0; i < this->indentSize; i++) {
-                out += (*borderCharSet)[3];
-            }*/
+            for (size_t i = 0, l = this->indentSize * currentItem->depth; i < l; i++) {
+                size_t charIndex = 3;
+
+                if (i == l - this->indentSize) {
+                    charIndex = 1;
+                }
+                else if (i % this->indentSize == 0 && i != l - 1) {
+                    charIndex = 0;
+                }
+                else if (i > l - this->indentSize) {
+                    charIndex = 4;
+                }
+
+                out += (*borderCharSet)[charIndex];
+            }
 
             out += std::wstring(currentItem->label.begin(), currentItem->label.end()) + L"\n";
 

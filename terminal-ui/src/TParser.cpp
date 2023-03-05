@@ -80,14 +80,15 @@ namespace TUI {
         return tTable;
     }
 
-    TTreeItem TParser::ParseTreeItem(pugi::xml_node node) {
+    TTreeItem TParser::ParseTreeItem(pugi::xml_node node, size_t depth) {
         TTreeItem tTreeItem;
         tTreeItem.label = node.attribute("label").as_string("");
+        tTreeItem.depth = depth + 1;
 
         const pugi::xml_object_range<pugi::xml_named_node_iterator> itemChildItems = node.children("item");
 
         for (pugi::xml_named_node_iterator itemIt = itemChildItems.begin(), itemEnd = itemChildItems.end(); itemIt != itemEnd; itemIt++) {
-            tTreeItem.children.push_back(ParseTreeItem(*itemIt));
+            tTreeItem.children.push_back(ParseTreeItem(*itemIt, tTreeItem.depth));
         }
 
         return tTreeItem;
@@ -99,12 +100,13 @@ namespace TUI {
         // Label
         const std::string& treeLabel = node.attribute("label").as_string();
         tTree.item.label = treeLabel;
+        tTree.item.depth = 0;
 
         // Items
         const pugi::xml_object_range<pugi::xml_named_node_iterator> treeChildItems = node.children("item");
 
         for (pugi::xml_named_node_iterator itemIt = treeChildItems.begin(), itemEnd = treeChildItems.end(); itemIt != itemEnd; itemIt++) {
-            tTree.item.children.push_back(ParseTreeItem(*itemIt));
+            tTree.item.children.push_back(ParseTreeItem(*itemIt, 0));
         }
 
         return tTree;
