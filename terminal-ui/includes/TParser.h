@@ -3,6 +3,7 @@
 
 #include "TDocument.h"
 #include "TTable.h"
+#include "TTree.h"
 #include <pugixml.hpp>
 
 namespace TUI {
@@ -12,6 +13,8 @@ namespace TUI {
 
     private:
         static TTable ParseTable(pugi::xml_node node);
+        static TTree ParseTree(pugi::xml_node node);
+        static TTreeItem ParseTreeItem(pugi::xml_node node);
 
     };
 }

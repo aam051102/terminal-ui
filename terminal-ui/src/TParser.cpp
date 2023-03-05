@@ -56,9 +56,6 @@ namespace TUI {
 
         tTable.padding = Rect(std::stoi(paddingStrSplit[0]), std::stoi(paddingStrSplit[1]), std::stoi(paddingStrSplit[2]), std::stoi(paddingStrSplit[3]));
 
-        // Head
-
-
         // Body
         const pugi::xml_node bodyNode = node.child("tbody");
 
@@ -80,10 +77,37 @@ namespace TUI {
             }
         }
 
-        // Foot
-
-
         return tTable;
+    }
+
+    TTreeItem TParser::ParseTreeItem(pugi::xml_node node) {
+        TTreeItem tTreeItem;
+        tTreeItem.label = node.attribute("label").as_string("");
+
+        const pugi::xml_object_range<pugi::xml_named_node_iterator> itemChildItems = node.children("item");
+
+        for (pugi::xml_named_node_iterator itemIt = itemChildItems.begin(), itemEnd = itemChildItems.end(); itemIt != itemEnd; itemIt++) {
+            tTreeItem.children.push_back(ParseTreeItem(*itemIt));
+        }
+
+        return tTreeItem;
+    }
+
+    TTree TParser::ParseTree(pugi::xml_node node) {
+        TTree tTree;
+
+        // Label
+        const std::string& treeLabel = node.attribute("label").as_string();
+        tTree.item.label = treeLabel;
+
+        // Items
+        const pugi::xml_object_range<pugi::xml_named_node_iterator> treeChildItems = node.children("item");
+
+        for (pugi::xml_named_node_iterator itemIt = treeChildItems.begin(), itemEnd = treeChildItems.end(); itemIt != itemEnd; itemIt++) {
+            tTree.item.children.push_back(ParseTreeItem(*itemIt));
+        }
+
+        return tTree;
     }
 
     TDocument TParser::ParseXML(pugi::xml_node node) {
@@ -95,6 +119,10 @@ namespace TUI {
             if (std::string((*it).name()) == "table") {
                 TTable tTable = TParser::ParseTable((*it));
                 tDoc.AddChild(&tTable);
+            }
+            else if (std::string((*it).name()) == "tree") {
+                TTree tTree = TParser::ParseTree((*it));
+                tDoc.AddChild(&tTree);
             }
             else {
                 throw TParserInvalidTagException();
