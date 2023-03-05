@@ -1,5 +1,6 @@
 # Terminal UI
 Generates unicode for a terminal user interface based on HTML-like input.
+Just a fun exercise. Not intended as a complete project for real use.
 
 ## Setup
 Clone repository.

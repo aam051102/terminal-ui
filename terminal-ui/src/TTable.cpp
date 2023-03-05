@@ -3,6 +3,7 @@
 #include <iostream>
 
 namespace TUI {
+    // Top-left, Top, Top-right, Right, Bottom-right, Bottom, Bottom-left, Left, Middle, All Connections, Left (Connection), Right (Connection), Top (Connection), Bottom (Connection)
     const std::unordered_map<ETTableBorderStyle, std::vector<wchar_t>> borderCharMap = {
         { ETTableBorderStyle::SINGLE, {L'\u250c', L'\u2500', L'\u2510', L'\u2502', L'\u2518', L'\u2500', L'\u2514', L'\u2502', ' ', L'\u2502', L'\u2500', L'\u253c', L'\u251c', L'\u2524', L'\u252c', L'\u2534'}},
         { ETTableBorderStyle::DOUBLE, {L'\u2554', L'\u2550', L'\u2557', L'\u2551', L'\u255d', L'\u2550', L'\u255a', L'\u2551', ' ', L'\u2551', L'\u2550', L'\u256c', L'\u2560', L'\u2563', L'\u2566', L'\u2569'}},
@@ -10,7 +11,7 @@ namespace TUI {
 
     TTable::TTable() {
         this->borderStyle = ETTableBorderStyle::SINGLE;
-        this->padding = Rect(1, 1, 2, 2);
+        this->padding = Rect(0, 0, 0, 0);
         this->rows = {};
     }
 

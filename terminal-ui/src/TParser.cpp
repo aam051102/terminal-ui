@@ -1,4 +1,5 @@
 #include "TParser.h"
+#include "StringHelper.h"
 #include <stdexcept>
 #include <unordered_map>
 #include <iostream>
@@ -40,6 +41,21 @@ namespace TUI {
         
         tTable.borderStyle = tableBorderStyleMap.at(borderStyle);
 
+        // Padding
+        const std::string paddingStr = node.attribute("padding").as_string("0,0,0,0");
+        
+        const std::vector<std::string> paddingStrSplit = StringHelper::Split(paddingStr, ",");
+
+        if (paddingStrSplit.size() != 4) {
+            throw TParserInvalidAttributeValueException();
+        }
+
+        if (!StringHelper::IsNumber(paddingStrSplit[0]) || !StringHelper::IsNumber(paddingStrSplit[1]) || !StringHelper::IsNumber(paddingStrSplit[2]) || !StringHelper::IsNumber(paddingStrSplit[3])) {
+            throw TParserInvalidAttributeValueException();
+        }
+
+        tTable.padding = Rect(std::stoi(paddingStrSplit[0]), std::stoi(paddingStrSplit[1]), std::stoi(paddingStrSplit[2]), std::stoi(paddingStrSplit[3]));
+
         // Head
 
 
@@ -73,7 +89,7 @@ namespace TUI {
     TDocument TParser::ParseXML(pugi::xml_node node) {
         TDocument tDoc;
 
-        pugi::xml_object_range<pugi::xml_node_iterator> children = node.children();
+        pugi::xml_object_range<pugi::xml_node_iterator> children = node.child("root").children();
 
         for (pugi::xml_node_iterator it = children.begin(), end = children.end(); it != end; it++) {
             if (std::string((*it).name()) == "table") {
