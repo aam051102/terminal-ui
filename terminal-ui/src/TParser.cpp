@@ -116,19 +116,50 @@ namespace TUI {
         return tTree;
     }
 
+    TText TParser::ParseText(pugi::xml_node node) {
+        TText tText;
+        
+        const std::vector<std::string> splitContent = StringHelper::Split(node.text().as_string(""), "\n");
+        std::vector<std::string> trimmedContent;
+
+        for (size_t i = 0, l = splitContent.size(); i < l; i++) {
+            const std::string& trimmed = StringHelper::Trim(splitContent[i]);
+            if (trimmed == "") continue;
+
+            trimmedContent.push_back(trimmed);
+        }
+
+        std::string content = "";
+        for (size_t i = 0, l = trimmedContent.size(); i < l; i++) {
+            content += trimmedContent[i];
+            
+            if (i != l - 1 && trimmedContent[i] != "") content += "\n";
+        }
+
+        tText.content = content;
+
+        return tText;
+    }
+
     TDocument TParser::ParseXML(pugi::xml_node node) {
         TDocument tDoc;
 
         pugi::xml_object_range<pugi::xml_node_iterator> children = node.child("root").children();
 
         for (pugi::xml_node_iterator it = children.begin(), end = children.end(); it != end; it++) {
-            if (std::string((*it).name()) == "table") {
+            std::string nodeName = std::string((*it).name());
+
+            if (nodeName == "table") {
                 TTable tTable = TParser::ParseTable((*it));
                 tDoc.AddChild(&tTable);
             }
-            else if (std::string((*it).name()) == "tree") {
+            else if (nodeName == "tree") {
                 TTree tTree = TParser::ParseTree((*it));
                 tDoc.AddChild(&tTree);
+            }
+            else if ((*it).type() == pugi::node_pcdata) {
+                TText tText = TParser::ParseText((*it));
+                tDoc.AddChild(&tText);
             }
             else {
                 throw TParserInvalidTagException();
