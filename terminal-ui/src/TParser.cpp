@@ -12,20 +12,14 @@ namespace TUI {
     };
 
     // --- Exceptions ---
-    class TParserInvalidAttributeValueException : public std::exception {
+    class TParserInvalidAttributeValueException : public std::runtime_error {
     public:
-        const char* what()
-        {
-            return "Unsupported attribute value found during parsing.";
-        }
+        TParserInvalidAttributeValueException() : std::runtime_error("Unsupported attribute value found during parsing.") {};
     };
 
-    class TParserInvalidTagException : public std::exception {
+    class TParserInvalidTagException : public std::runtime_error {
     public:
-        const char* what()
-        {
-            return "Unsupported tag name found during parsing.";
-        }
+        TParserInvalidTagException() : std::runtime_error("Unsupported tag name found during parsing.") {};
     };
 
     // --- Methods ---
