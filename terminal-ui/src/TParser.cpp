@@ -39,7 +39,7 @@ namespace TUI {
             throw TParserInvalidAttributeValueException();
         }
         
-        tTable.borderStyle = tableBorderStyleMap.at(borderStyle);
+        tTable.SetBorderStyle(tableBorderStyleMap.at(borderStyle));
 
         // Padding
         const std::string paddingStr = node.attribute("padding").as_string("0,0,0,0");
@@ -54,7 +54,7 @@ namespace TUI {
             throw TParserInvalidAttributeValueException();
         }
 
-        tTable.padding = Rect(std::stoi(paddingStrSplit[0]), std::stoi(paddingStrSplit[1]), std::stoi(paddingStrSplit[2]), std::stoi(paddingStrSplit[3]));
+        tTable.SetPadding(Rect(std::stoi(paddingStrSplit[0]), std::stoi(paddingStrSplit[1]), std::stoi(paddingStrSplit[2]), std::stoi(paddingStrSplit[3])));
 
         // Body
         const pugi::xml_node bodyNode = node.child("tbody");
@@ -73,7 +73,7 @@ namespace TUI {
                     tRow.cells.push_back(tCell);
                 }
 
-                tTable.rows.push_back(tRow);
+                tTable.AddRow(tRow);
             }
         }
 
@@ -96,21 +96,20 @@ namespace TUI {
 
     TTree TParser::ParseTree(pugi::xml_node node) {
         TTree tTree;
-        tTree.item.depth = 0;
 
         // Label
         const std::string& treeLabel = node.attribute("label").as_string();
-        tTree.item.label = treeLabel;
+        tTree.SetLabel(treeLabel);
 
         // Indent Size
         size_t indentSize = node.attribute("indentSize").as_ullong();
-        tTree.indentSize = indentSize;
+        tTree.SetIndentSize(indentSize);
 
         // Items
         const pugi::xml_object_range<pugi::xml_named_node_iterator> treeChildItems = node.children("item");
 
         for (pugi::xml_named_node_iterator itemIt = treeChildItems.begin(), itemEnd = treeChildItems.end(); itemIt != itemEnd; itemIt++) {
-            tTree.item.children.push_back(ParseTreeItem(*itemIt, 0));
+            tTree.AddChild(ParseTreeItem(*itemIt, 0));
         }
 
         return tTree;
@@ -136,7 +135,7 @@ namespace TUI {
             if (i != l - 1 && trimmedContent[i] != "") content += "\n";
         }
 
-        tText.content = content;
+        tText.SetContent(content);
 
         return tText;
     }

@@ -15,6 +15,10 @@ namespace TUI {
         this->rows = {};
     }
 
+    void TTable::AddRow(const TTableRow row) {
+        this->rows.push_back(row);
+    }
+
     std::wstring TTable::Render() {
         // Calculate size
         std::vector<size_t> contentWidths;

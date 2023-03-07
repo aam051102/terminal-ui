@@ -12,6 +12,10 @@ namespace TUI {
         this->indentSize = 4;
     }
 
+    void TTree::AddChild(const TTreeItem item) {
+        this->item.children.push_back(item);
+    }
+
     std::wstring TTree::Render() {
         // Render
         const std::vector<wchar_t>* borderCharSet = &borderCharMap.at(ETreeBorderStyle::SINGLE);

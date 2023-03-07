@@ -1,5 +1,4 @@
 #include "TParser.h"
-#include "TRenderer.h"
 #include "TDocument.h"
 #include <pugixml.hpp>
 #include <iostream>
@@ -36,7 +35,7 @@ int main(int argc, char* argv[]) {
 
     // Render
     system("cls");
-    std::wcout << TRenderer::Render(tDoc);
+    std::wcout << tDoc.Render();
     std::cout << std::endl << "Rendering complete. Press enter to close..." << std::endl;
     std::cin.get();
     

@@ -12,6 +12,8 @@ namespace TUI {
         std::string label;
         size_t depth;
         std::vector<TTreeItem> children;
+
+        TTreeItem() : label(""), depth(0), children() {};
     };
 
     enum class ETreeBorderStyle {
@@ -22,13 +24,17 @@ namespace TUI {
     public:
         TTree();
 
-        std::wstring Render() override;
+        virtual std::wstring Render() override;
 
-        size_t indentSize;
+        void AddChild(const TTreeItem child);
 
-        TTreeItem item;
+        void SetLabel(const std::string& label) { this->item.label = label; };
+        void SetIndentSize(size_t indentSize) { this->indentSize = indentSize; }
 
     protected:
+        size_t indentSize;
+        TTreeItem item;
+
         virtual TTree* CloneImpl() const override {
             return new TTree(*this);
         };

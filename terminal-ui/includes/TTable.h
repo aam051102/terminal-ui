@@ -29,14 +29,19 @@ namespace TUI {
     public:
         TTable();
 
-        std::wstring Render() override;
+        virtual std::wstring Render() override;
 
+        void AddRow(const TTableRow row);
+
+        void SetBorderStyle(ETTableBorderStyle borderStyle) { this->borderStyle = borderStyle; };
+        void SetPadding(Rect padding) { this->padding = padding; };
+
+    protected:
         ETTableBorderStyle borderStyle;
         Rect padding;
 
         std::vector<TTableRow> rows;
 
-    protected:
         virtual TTable* CloneImpl() const override {
             return new TTable(*this);
         };

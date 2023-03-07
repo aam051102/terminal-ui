@@ -9,11 +9,13 @@ namespace TUI {
     public:
         TText();
 
-        std::wstring Render() override;
+        virtual std::wstring Render() override;
 
-        std::string content;
+        void SetContent(const std::string& content) { this->content = content; };
 
     protected:
+        std::string content;
+
         virtual TText* CloneImpl() const override {
             return new TText(*this);
         };

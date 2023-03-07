@@ -6,13 +6,12 @@
 #include <memory>
 
 namespace TUI {
-    class TDocument {
+    class TDocument : public TItem {
     public:
         TDocument() : children() {};
 
         void AddChild(TItem* child);
-        
-        std::vector<std::unique_ptr<TItem>> children;
+        virtual std::wstring Render() override;
       
         // Rule of five
         ~TDocument() = default;
@@ -32,6 +31,14 @@ namespace TUI {
             return *this;
         }
         TDocument& operator=(TDocument&& other) = default;
+
+    protected:
+        std::vector<std::unique_ptr<TItem>> children;
+
+        virtual TDocument* CloneImpl() const override {
+            return new TDocument(*this);
+        };
+
     };
 }
 
