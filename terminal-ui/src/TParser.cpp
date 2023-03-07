@@ -1,28 +1,14 @@
 #include "TParser.h"
 #include "StringHelper.h"
-#include <stdexcept>
 #include <unordered_map>
 #include <iostream>
 
 namespace TUI {
-    // --- Maps ---
     static std::unordered_map<std::string, ETTableBorderStyle> tableBorderStyleMap = {
         { "single", ETTableBorderStyle::SINGLE },
         { "double", ETTableBorderStyle::DOUBLE}
     };
 
-    // --- Exceptions ---
-    class TParserInvalidAttributeValueException : public std::runtime_error {
-    public:
-        TParserInvalidAttributeValueException() : std::runtime_error("Unsupported attribute value found during parsing.") {};
-    };
-
-    class TParserInvalidTagException : public std::runtime_error {
-    public:
-        TParserInvalidTagException() : std::runtime_error("Unsupported tag name found during parsing.") {};
-    };
-
-    // --- Methods ---
     TTable TParser::ParseTable(pugi::xml_node node) {
         TTable tTable;
 

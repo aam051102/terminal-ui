@@ -31,13 +31,19 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     
-    TDocument tDoc = TParser::ParseXML(doc.root());
+    try {
+        TDocument tDoc = TParser::ParseXML(doc.root());
 
-    // Render
-    system("cls");
-    std::wcout << tDoc.Render();
-    std::cout << std::endl << "Rendering complete. Press enter to close..." << std::endl;
-    std::cin.get();
+        // Render
+        system("cls");
+        std::wcout << tDoc.Render();
+        std::cout << std::endl << "Rendering complete. Press enter to close..." << std::endl;
+        std::cin.get();
+    }
+    catch (const TParserException& e) {
+        std::cerr << "Parsing failed: " << e.what() << std::endl;
+        return 1;
+    }
     
     return 0;
 }

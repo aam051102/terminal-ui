@@ -6,8 +6,24 @@
 #include "TTree.h"
 #include "TText.h"
 #include <pugixml.hpp>
+#include <stdexcept>
 
 namespace TUI {
+    class TParserException : public std::runtime_error {
+    public:
+        TParserException(const std::string& in) : std::runtime_error(in) {};
+    };
+
+    class TParserInvalidAttributeValueException : public TParserException {
+    public:
+        TParserInvalidAttributeValueException() : TParserException("Unsupported attribute value found during parsing.") {};
+    };
+
+    class TParserInvalidTagException : public TParserException {
+    public:
+        TParserInvalidTagException() : TParserException("Unsupported tag name found during parsing.") {};
+    };
+
     class TParser {
     public:
         static TDocument ParseXML(pugi::xml_node node);
