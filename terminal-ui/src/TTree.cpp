@@ -23,58 +23,55 @@ namespace TUI {
 
         std::wstring out = L"";
 
-        std::vector<TTreeItem*> flatItems = { &this->item };
+        std::vector<TTreeItem*> flatItems({ &this->item });
         std::unordered_map<size_t, TTreeItem*> lastItems;
         TTreeItem* currentItem;
 
         while (flatItems.size() != 0) {
             currentItem = flatItems.back();
-            const bool isLastItem = lastItems[currentItem->depth - 1] == currentItem;
+            flatItems.pop_back();
 
-            // Render hierarchy lines
-            size_t depthDiff = currentItem->depth - this->item.depth;
-            size_t prevDepth = depthDiff - 1;
+            if (currentItem->depth != 0) {
+                const bool isLastItem = lastItems[currentItem->depth - 1] == currentItem;
 
-            for (size_t curDepth = 0; curDepth < depthDiff; curDepth++) {
-                size_t charIndex = 0;
+                // Render hierarchy lines
+                for (size_t curDepth = 0, l = currentItem->depth - 1; curDepth < l; curDepth++) {
+                    size_t charIndex = 0;
 
-                if (lastItems[curDepth] == nullptr) {
-                    charIndex = 3;
-                }
-                else if(curDepth == prevDepth) {
-                    if (isLastItem) {
-                        charIndex = 2;
+                    if (lastItems[curDepth] == nullptr) {
+                        charIndex = 3;
                     }
-                    else {
-                        charIndex = 1;
+
+                    out += (*borderCharSet)[charIndex];
+
+                    // Render spacing
+                    for (size_t j = 1; j < this->indentSize; j++) {
+                        out += (*borderCharSet)[3];
                     }
                 }
-                
+
+                // Render last hierarchy line
+                size_t charIndex = 1;
+
+                if (isLastItem) {
+                    charIndex = 2;
+
+                    // Remove item from item lists
+                    lastItems[currentItem->depth - 1] = nullptr;
+                }
+
                 out += (*borderCharSet)[charIndex];
 
-                // Render spacing and final lines
-                charIndex = 3;
-                if (curDepth == prevDepth) {
-                    charIndex = 4;
-                }
-
                 for (size_t j = 1; j < this->indentSize; j++) {
-                    out += (*borderCharSet)[charIndex];
+                    out += (*borderCharSet)[4];
                 }
             }
 
             // Render item label
             out += std::wstring(currentItem->label.begin(), currentItem->label.end()) + L"\n";
 
-            // Remove item from item lists
-            flatItems.pop_back();
-
-            if (isLastItem) {
-                lastItems[currentItem->depth - 1] = nullptr;
-            }
-
             // Add next children
-            if (currentItem->children.size() > 0) {
+            if (currentItem->children.size() != 0) {
                 for (size_t i = currentItem->children.size() - 1; i != SIZE_MAX; i--) {
                     flatItems.emplace_back(&currentItem->children[i]);
                 }
