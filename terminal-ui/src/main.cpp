@@ -3,6 +3,7 @@
 #include <pugixml.hpp>
 #include <iostream>
 #include <codecvt>
+#include <stdexcept>
 
 using namespace TUI;
 
@@ -42,6 +43,10 @@ int main(int argc, char* argv[]) {
     }
     catch (const TParserException& e) {
         std::cerr << "Parsing failed: " << e.what() << std::endl;
+        return 2;
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
         return 1;
     }
     
