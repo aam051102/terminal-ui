@@ -18,8 +18,7 @@ namespace TUI {
 
     // NOTE: While this is both quite fast and functional, it only supports children having parent depth + 1
     std::wstring TTree::Render() {
-        // Render
-        const std::vector<wchar_t>* borderCharSet = &borderCharMap.at(ETreeBorderStyle::SINGLE);
+        const std::vector<wchar_t>& borderCharSet = *(&borderCharMap.at(ETreeBorderStyle::SINGLE));
 
         std::wstring out = L"";
 
@@ -42,11 +41,11 @@ namespace TUI {
                         charIndex = 3;
                     }
 
-                    out += (*borderCharSet)[charIndex];
+                    out += borderCharSet[charIndex];
 
                     // Render spacing
                     for (size_t j = 1; j < this->indentSize; j++) {
-                        out += (*borderCharSet)[3];
+                        out += borderCharSet[3];
                     }
                 }
 
@@ -60,10 +59,10 @@ namespace TUI {
                     lastItems[currentItem->depth - 1] = nullptr;
                 }
 
-                out += (*borderCharSet)[charIndex];
+                out += borderCharSet[charIndex];
 
                 for (size_t j = 1; j < this->indentSize; j++) {
-                    out += (*borderCharSet)[4];
+                    out += borderCharSet[4];
                 }
             }
 
@@ -76,7 +75,7 @@ namespace TUI {
                     flatItems.emplace_back(&currentItem->children[i]);
                 }
 
-                lastItems[currentItem->depth] = &currentItem->children[currentItem->children.size() - 1];
+                lastItems[currentItem->depth] = &currentItem->children.back();
             }
         }
 
