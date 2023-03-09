@@ -16,25 +16,32 @@ namespace TUI {
         this->item.children.push_back(item);
     }
 
+    // NOTE: While this is both quite fast and functional, it only supports children having parent depth + 1
     std::wstring TTree::Render() {
         // Render
         const std::vector<wchar_t>* borderCharSet = &borderCharMap.at(ETreeBorderStyle::SINGLE);
 
         std::wstring out = L"";
 
-        std::vector<TTreeItem*> deepItems = { &this->item };
-        std::vector<TTreeItem*> lastItems;
+        std::vector<TTreeItem*> flatItems = { &this->item };
+        std::unordered_map<size_t, TTreeItem*> lastItems;
         TTreeItem* currentItem;
 
-        while (deepItems.size() != 0 && (currentItem = deepItems.back()) != nullptr) {
-            deepItems.pop_back();
-            const bool isLastItem = lastItems.size() > 0 && lastItems[lastItems.size() - 1] == currentItem;
+        while (flatItems.size() != 0) {
+            currentItem = flatItems.back();
+            const bool isLastItem = lastItems[currentItem->depth - 1] == currentItem;
 
-            for (size_t i = 0, l = this->indentSize * currentItem->depth; i < l; i++) {
-                size_t charIndex = 3;
-                size_t expectedDepth = i / this->indentSize + 1;
+            // Render hierarchy lines
+            size_t depthDiff = currentItem->depth - this->item.depth;
+            size_t prevDepth = depthDiff - 1;
 
-                if (i == l - this->indentSize) {
+            for (size_t curDepth = 0; curDepth < depthDiff; curDepth++) {
+                size_t charIndex = 0;
+
+                if (lastItems[curDepth] == nullptr) {
+                    charIndex = 3;
+                }
+                else if(curDepth == prevDepth) {
                     if (isLastItem) {
                         charIndex = 2;
                     }
@@ -42,28 +49,37 @@ namespace TUI {
                         charIndex = 1;
                     }
                 }
-                else if (i % this->indentSize == 0 && i != l - 1 && std::find_if(lastItems.begin(), lastItems.end(), [expectedDepth](TTreeItem* item) { return item->depth == expectedDepth; }) != lastItems.end()) {
-                    charIndex = 0;
-                }
-                else if (i > l - this->indentSize) {
+                
+                out += (*borderCharSet)[charIndex];
+
+                // Render spacing and final lines
+                charIndex = 3;
+                if (curDepth == prevDepth) {
                     charIndex = 4;
                 }
 
-                out += (*borderCharSet)[charIndex];
+                for (size_t j = 1; j < this->indentSize; j++) {
+                    out += (*borderCharSet)[charIndex];
+                }
             }
 
-            if (isLastItem) {
-                lastItems.pop_back();
-            }
-
+            // Render item label
             out += std::wstring(currentItem->label.begin(), currentItem->label.end()) + L"\n";
 
+            // Remove item from item lists
+            flatItems.pop_back();
+
+            if (isLastItem) {
+                lastItems[currentItem->depth - 1] = nullptr;
+            }
+
+            // Add next children
             if (currentItem->children.size() > 0) {
                 for (size_t i = currentItem->children.size() - 1; i != SIZE_MAX; i--) {
-                    deepItems.push_back(&currentItem->children[i]);
+                    flatItems.emplace_back(&currentItem->children[i]);
                 }
 
-                lastItems.push_back(&currentItem->children[currentItem->children.size() - 1]);
+                lastItems[currentItem->depth] = &currentItem->children[currentItem->children.size() - 1];
             }
         }
 
