@@ -23,14 +23,15 @@ namespace TUI {
         // Calculate size
         std::vector<size_t> contentWidths;
 
-        for (size_t i = 0, l = this->rows.size(); i < l; i++) {
+        for (size_t i = 0, rowCount = this->rows.size(); i < rowCount; i++) {
             const TTableRow& row = this->rows[i];
+            const size_t cellCount = row.cells.size();
 
-            if (contentWidths.size() < row.cells.size()) {
-                contentWidths.resize(row.cells.size());
+            if (contentWidths.size() < cellCount) {
+                contentWidths.resize(cellCount);
             }
 
-            for (size_t j = 0, l2 = row.cells.size(); j < l2; j++) {
+            for (size_t j = 0; j < cellCount; j++) {
                 const TTableCell& cell = row.cells[j];
 
                 if (cell.content.length() > contentWidths[j]) {
@@ -47,15 +48,16 @@ namespace TUI {
         std::wstring prerenderedTop;
         std::wstring prerenderedDivider;
         std::wstring prerenderedBottom;
-
         std::wstring prerenderedPaddingTop;
         std::wstring prerenderedPaddingBottom;
 
+        // Left side
         prerenderedTop += borderCharSet[0];
         prerenderedDivider += borderCharSet[12];
         prerenderedBottom += borderCharSet[6];
 
         for (size_t i = 0; i < colCount; i++) {
+            // Column separators
             prerenderedBlank += borderCharSet[7];
             
             if (i != 0) {
@@ -65,6 +67,7 @@ namespace TUI {
             }
 
             for (size_t j = 0; j < contentWidths[i] + this->padding.left + this->padding.right; j++) {
+                // Between column dividers
                 prerenderedBlank += borderCharSet[8];
                 prerenderedTop += borderCharSet[1];
                 prerenderedDivider += borderCharSet[10];
@@ -72,19 +75,18 @@ namespace TUI {
             }
         }
 
+        // Right side
         prerenderedBlank += borderCharSet[3];
         prerenderedTop += borderCharSet[2];
         prerenderedDivider += borderCharSet[13];
         prerenderedBottom += borderCharSet[4];
 
         for (size_t i = 0; i < this->padding.top; i++) {
-            prerenderedPaddingTop += prerenderedBlank;
-            if (i != this->padding.top - 1) prerenderedPaddingTop += L"\n";
+            prerenderedPaddingTop += prerenderedBlank + L"\n";
         }
         
         for (size_t i = 0; i < this->padding.bottom; i++) {
             prerenderedPaddingBottom += prerenderedBlank + L"\n";
-            if (i != this->padding.bottom - 1) prerenderedPaddingBottom += L"\n";
         }
 
         // Render
@@ -92,31 +94,26 @@ namespace TUI {
 
         out += prerenderedTop + L"\n";
 
-        for (size_t i = 0; i < this->rows.size(); i++) {
+        for (size_t i = 0, rowCount = this->rows.size(); i < rowCount; i++) {
             const TTableRow& row = this->rows[i];
-
-            if (prerenderedPaddingTop != L"") {
-                out += prerenderedPaddingTop + L"\n";
-            }
-
+            
+            // TODO: Pre-calculate position text position
             std::wstring content = prerenderedBlank;
             std::wstring::iterator distPos = content.begin() + 1 + this->padding.left;
 
-            for (size_t j = 0; j < row.cells.size(); j++) {
+            for (size_t j = 0, cellCount = row.cells.size(); j < cellCount; j++) {
                 std::copy(row.cells[j].content.begin(), row.cells[j].content.end(), distPos);
                 
-                if (j != row.cells.size() - 1) {
+                if (j != cellCount - 1) {
                     distPos += contentWidths[j] + this->padding.right + this->padding.left + 1;
                 }
             }
 
+            out += prerenderedPaddingTop;
             out += content + L"\n";
+            out += prerenderedPaddingTop;
 
-            if (prerenderedPaddingBottom != L"") {
-                out += prerenderedPaddingTop + L"\n";
-            }
-
-            if(i != this->rows.size() - 1) out += prerenderedDivider + L"\n";
+            if(i != rowCount - 1) out += prerenderedDivider + L"\n";
         }
 
         out += prerenderedBottom + L"\n";
